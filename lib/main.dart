@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Lato',
           textTheme: TextTheme(
             titleMedium: TextStyle(
-              color: Colors.white,
+              color: Colors.black,
             )
           ),
         ),

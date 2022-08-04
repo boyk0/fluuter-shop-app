@@ -1,7 +1,7 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../providers/product.dart';
+import '../providers/products.dart';
 
 class EditProductScreen extends StatefulWidget {
   static const routeName = '/edit-product';
@@ -48,7 +48,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
       return;
     }
     _form.currentState.save();
-    print(_editedProduct.description);
+    Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
+    Navigator.of(context).pop();
   }
 
   @override
@@ -101,7 +102,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 },
                 onSaved: (value) {
                   _editedProduct = Product(
-                      id: _editedProduct.id,
+                      id: null,
                       title: value,
                       description: _editedProduct.description,
                       price: _editedProduct.price,
@@ -120,7 +121,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 onFieldSubmitted: (_) => FocusScope.of(context).requestFocus(_descriptionFocusNode),
                 onSaved: (value) {
                   _editedProduct = Product(
-                    id: _editedProduct.id,
+                    id: null,
                     title: _editedProduct.title,
                     description: _editedProduct.description,
                     price: double.parse(value),
@@ -150,7 +151,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 focusNode: _descriptionFocusNode,
                 onSaved: (value) {
                   _editedProduct = Product(
-                    id: _editedProduct.id,
+                    id: null,
                     title: _editedProduct.title,
                     description: value,
                     price: _editedProduct.price,
@@ -195,7 +196,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       onFieldSubmitted: (_) => _saveForm(),
                       onSaved: (value) {
                         _editedProduct = Product(
-                          id: _editedProduct.id,
+                          id: null,
                           title: _editedProduct.title,
                           description: _editedProduct.description,
                           price: _editedProduct.price,

@@ -60,10 +60,14 @@ class Products with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  addProduct(
-      // Product product
-      ) {
-    // _items.add(product);
+  addProduct(Product product) {
+    _items.add(Product(
+        id: DateTime.now().toString(),
+        title: product.title,
+        description: product.description,
+        price: product.price,
+        imageUrl: product.imageUrl,
+    ));
     notifyListeners();
   }
 }

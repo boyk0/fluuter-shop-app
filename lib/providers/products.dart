@@ -64,10 +64,10 @@ class Products with ChangeNotifier {
     final index = _items.indexWhere((element) => id == element.id);
     if (index >= 0) {
       _items[index] = product;
+      notifyListeners();
     } else {
-      _items.add(product);
+      addProduct(product);
     }
-    notifyListeners();
   }
 
   void addProduct(Product product) {
@@ -78,6 +78,11 @@ class Products with ChangeNotifier {
         price: product.price,
         imageUrl: product.imageUrl,
     ));
+    notifyListeners();
+  }
+
+  void deleteProduct(String id) {
+    _items.removeWhere((element) => element.id == id);
     notifyListeners();
   }
 }

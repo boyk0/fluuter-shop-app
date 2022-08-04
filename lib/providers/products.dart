@@ -38,12 +38,7 @@ class Products with ChangeNotifier {
     ),
   ];
 
-  bool _showFavoritesOnly = false;
-
   List<Product> get items {
-    // if (_showFavoritesOnly) {
-    //   return _items.where((product) => product.isFavorite).toList();
-    // }
     return [..._items];
   }
 
@@ -65,10 +60,29 @@ class Products with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  addProduct(
-      // Product product
-      ) {
-    // _items.add(product);
+  void editProduct(String id, Product product) {
+    final index = _items.indexWhere((element) => id == element.id);
+    if (index >= 0) {
+      _items[index] = product;
+      notifyListeners();
+    } else {
+      addProduct(product);
+    }
+  }
+
+  void addProduct(Product product) {
+    _items.add(Product(
+        id: DateTime.now().toString(),
+        title: product.title,
+        description: product.description,
+        price: product.price,
+        imageUrl: product.imageUrl,
+    ));
+    notifyListeners();
+  }
+
+  void deleteProduct(String id) {
+    _items.removeWhere((element) => element.id == id);
     notifyListeners();
   }
 }

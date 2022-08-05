@@ -81,15 +81,20 @@ class Products with ChangeNotifier {
       'price': product.price,
       'imageUrl': product.imageUrl,
       'idFavorite': product.isFavorite,
-    }));
-    _items.add(Product(
-        id: DateTime.now().toString(),
-        title: product.title,
-        description: product.description,
-        price: product.price,
-        imageUrl: product.imageUrl,
-    ));
-    notifyListeners();
+    })).then((response) {
+
+      if (response.statusCode == 200) {
+        final body = json.decode(response.body);
+        _items.add(Product(
+            id: body['name'],
+            title: product.title,
+            description: product.description,
+            price: product.price,
+            imageUrl: product.imageUrl,
+        ));
+        notifyListeners();
+      }
+    });
   }
 
   void deleteProduct(String id) {

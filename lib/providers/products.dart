@@ -63,30 +63,31 @@ class Products with ChangeNotifier {
     }
   }
 
-  Future<void> addProduct(Product product) {
-    var url = Uri.https('flutter-shop-33f16-default-rtdb.firebaseio.com', '/products.json');
-    return http.post(url, body: json.encode({
-      'title': product.title,
-      'description': product.description,
-      'price': product.price,
-      'imageUrl': product.imageUrl,
-      'idFavorite': product.isFavorite,
-    })).then((response) {
+  Future<void> addProduct(Product product) async {
+    try {
+      var url = Uri.https(
+          'flutter-shop-33f16-default-rtdb.firebaseio.com', '/products.json');
+      final response =  await http.post(url, body: json.encode({
+        'title': product.title,
+        'description': product.description,
+        'price': product.price,
+        'imageUrl': product.imageUrl,
+        'idFavorite': product.isFavorite,
+      }));
       if (response.statusCode == 200) {
         final body = json.decode(response.body);
         _items.add(Product(
-            id: body['name'],
-            title: product.title,
-            description: product.description,
-            price: product.price,
-            imageUrl: product.imageUrl,
+          id: body['name'],
+          title: product.title,
+          description: product.description,
+          price: product.price,
+          imageUrl: product.imageUrl,
         ));
         notifyListeners();
       }
-    })
-    .catchError((error) {
-      throw error;
-    });
+    } catch (error) {
+        throw error;
+    }
   }
 
   void deleteProduct(String id) {

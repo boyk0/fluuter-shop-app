@@ -25,6 +25,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     'isFavorite': false,
   };
   String _type = 'create';
+  bool _isLoading = false;
 
   Product _editedProduct = Product(
     id: null,
@@ -80,8 +81,23 @@ class _EditProductScreenState extends State<EditProductScreen> {
       return;
     }
     _form.currentState.save();
-    _type == 'create' ? Provider.of<Products>(context, listen: false).addProduct(_editedProduct) : Provider.of<Products>(context, listen: false).editProduct(_editedProduct.id, _editedProduct);
-    Navigator.of(context).pop();
+    setState(() {
+      _isLoading = true;
+    });
+    if (_type == 'create') {
+      Provider.of<Products>(context, listen: false).addProduct(_editedProduct)
+        .then((_) => setState(() => _isLoading = false))
+        .then((_) => Navigator.of(context).pop());
+    } else {
+      Provider.of<Products>(context, listen: false).editProduct(
+        _editedProduct.id, _editedProduct,
+      );
+      setState(() {
+        _isLoading = false;
+      });
+      Navigator.of(context).pop();
+
+    };
   }
 
   @override
@@ -106,7 +122,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
           ),
         ],
       ),
-      body: Padding(
+      body: _isLoading ? Center(
+        child: CircularProgressIndicator(
+
+        ),
+      ) : Padding(
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _form,

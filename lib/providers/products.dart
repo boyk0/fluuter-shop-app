@@ -72,7 +72,6 @@ class Products with ChangeNotifier {
       'imageUrl': product.imageUrl,
       'idFavorite': product.isFavorite,
     })).then((response) {
-
       if (response.statusCode == 200) {
         final body = json.decode(response.body);
         _items.add(Product(
@@ -84,6 +83,9 @@ class Products with ChangeNotifier {
         ));
         notifyListeners();
       }
+    })
+    .catchError((error) {
+      throw error;
     });
   }
 

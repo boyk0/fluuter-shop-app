@@ -8,6 +8,8 @@ import '../widgets/order_item.dart';
 class OrdersScreen extends StatelessWidget{
   static const String routeName = '/orders';
 
+  bool _isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     final orderData = Provider.of<Orders>(context);

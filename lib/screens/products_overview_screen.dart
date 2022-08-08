@@ -25,8 +25,10 @@ class _ProductsOverViewScreenState extends State<ProductsOverViewScreen> {
 
   // @override
   // void initState() {
-  //   Provider.of<Products>(context, listen: false).fetchAndSetProducts();
-  //   // Future.delayed(Duration.zero).then((_) => Provider.of<Products>(context, listen: false).fetchAndSetProducts());
+  //   // Provider.of<Products>(context, listen: false).fetchAndSetProducts();
+  //   Future.delayed(Duration.zero)
+  //       .then((_) => Provider.of<Products>(context, listen: false).fetchAndSetProducts())
+  //       .then((_) => setState(() => _isLoading = false));
   //   super.initState();
   // }
 

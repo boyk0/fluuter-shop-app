@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../providers/product.dart';
 import '../providers/products.dart';
 
@@ -25,6 +26,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     'isFavorite': false,
   };
   String _type = 'create';
+  bool _isLoading = false;
 
   Product _editedProduct = Product(
     id: null,
@@ -75,12 +77,48 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
   }
 
-  void _saveForm() {
+  Future<void> _saveForm() async {
     if (!_form.currentState.validate()) {
       return;
     }
     _form.currentState.save();
-    _type == 'create' ? Provider.of<Products>(context, listen: false).addProduct(_editedProduct) : Provider.of<Products>(context, listen: false).editProduct(_editedProduct.id, _editedProduct);
+    setState(() {
+      _isLoading = true;
+    });
+    if (_type == 'create') {
+      try {
+        await Provider.of<Products>(context, listen: false)
+            .addProduct(_editedProduct);
+      } catch (error) {
+        await showDialog(
+          context: context,
+          builder: (ctx) =>
+              AlertDialog(
+                title: Text('An error occurred!'),
+                content: Text('Something went wrong'),
+                actions: [
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.of(ctx).pop();
+                      // setState(() => _isLoading = false);
+                    },
+                    child: Text('Okay'),
+                  )
+                ],
+              ),
+        );
+      }
+    } else {
+      await Provider.of<Products>(context, listen: false).editProduct(
+        _editedProduct.id, _editedProduct,
+      );
+      setState(() {
+        _isLoading = false;
+      });
+      Navigator.of(context).pop();
+
+    };
+    setState(() => _isLoading = false);
     Navigator.of(context).pop();
   }
 
@@ -106,7 +144,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
           ),
         ],
       ),
-      body: Padding(
+      body: _isLoading ? Center(
+        child: CircularProgressIndicator(
+
+        ),
+      ) : Padding(
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _form,

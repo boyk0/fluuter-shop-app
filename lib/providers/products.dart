@@ -49,7 +49,7 @@ class Products with ChangeNotifier {
     return _items.firstWhere((product) => product.id == id);
   }
   
-  List<Product> get  fovoriteItems {
+  List<Product> get favoriteItems {
     return _items.where((product) => product.isFavorite).toList();
   }
 
@@ -90,6 +90,7 @@ class Products with ChangeNotifier {
             imageUrl: data['imageUrl'],
             description: data['description'],
             price: data['price'],
+            isFavorite: data['isFavorite'],
         ));
         notifyListeners();
       });

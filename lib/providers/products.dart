@@ -53,13 +53,26 @@ class Products with ChangeNotifier {
     return _items.where((product) => product.isFavorite).toList();
   }
 
-  void editProduct(String id, Product product) {
-    final index = _items.indexWhere((element) => id == element.id);
-    if (index >= 0) {
-      _items[index] = product;
-      notifyListeners();
-    } else {
-      addProduct(product);
+  Future<void> editProduct(String id, Product product) async {
+    try {
+      final index = _items.indexWhere((element) => id == element.id);
+      if (index >= 0) {
+        final url = Uri.https('flutter-shop-33f16-default-rtdb.firebaseio.com',
+            '/products/${id}.json');
+        await http.patch(url, body: json.encode({
+          'title': product.title,
+          'isFavorite': product.isFavorite,
+          'imageUrl': product.imageUrl,
+          'price': product.price,
+          'description': product.description,
+        }));
+        _items[index] = product;
+        notifyListeners();
+      } else {
+        addProduct(product);
+      }
+    } catch (error) {
+      throw error;
     }
   }
 
@@ -76,6 +89,7 @@ class Products with ChangeNotifier {
             title: data['title'],
             imageUrl: data['imageUrl'],
             description: data['description'],
+            price: data['price'],
         ));
         notifyListeners();
       });

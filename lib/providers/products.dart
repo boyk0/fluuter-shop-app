@@ -127,8 +127,16 @@ class Products with ChangeNotifier {
     }
   }
 
-  void deleteProduct(String id) {
-    _items.removeWhere((element) => element.id == id);
-    notifyListeners();
+  Future<void> deleteProduct(String id) async {
+    try {
+      final url = Uri.https('flutter-shop-33f16-default-rtdb.firebaseio.com',
+          '/products/${id}.json');
+      await http.delete(url);
+
+      _items.removeWhere((element) => element.id == id);
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
   }
 }

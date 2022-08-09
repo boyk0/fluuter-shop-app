@@ -32,27 +32,29 @@ class MyApp extends StatelessWidget {
           value: Auth(),
       ),
     ],
-      child: MaterialApp(
-        title: 'MyShop',
-        theme: ThemeData(
-          primarySwatch: Colors.purple,
-          accentColor: Colors.deepOrange,
-          fontFamily: 'Lato',
-          textTheme: TextTheme(
-            titleMedium: TextStyle(
-              color: Colors.black,
-            )
+      child: Consumer<Auth>(
+        builder: (ctx, authData, child) =>  MaterialApp(
+          title: 'MyShop',
+          theme: ThemeData(
+            primarySwatch: Colors.purple,
+            accentColor: Colors.deepOrange,
+            fontFamily: 'Lato',
+            textTheme: TextTheme(
+              titleMedium: TextStyle(
+                color: Colors.black,
+              )
+            ),
           ),
+          home: authData.isAuth ? ProductsOverViewScreen() : AuthScreen(),
+          routes: {
+            ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
+            CartScreen.routeName: (ctx) => CartScreen(),
+            OrdersScreen.routeName: (ctx) => OrdersScreen(),
+            UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
+            EditProductScreen.routeName: (ctx) => EditProductScreen(),
+            ProductsOverViewScreen.routeName: (ctx) => ProductsOverViewScreen(),
+          },
         ),
-        home: AuthScreen(),
-        routes: {
-          ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
-          CartScreen.routeName: (ctx) => CartScreen(),
-          OrdersScreen.routeName: (ctx) => OrdersScreen(),
-          UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
-          EditProductScreen.routeName: (ctx) => EditProductScreen(),
-          // '/': (ctx) => ProductsOverViewScreen(),
-        },
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth.dart';
+import 'products_overview_screen.dart';
 
 enum AuthMode { Signup, Login }
 
@@ -132,6 +133,7 @@ class _AuthCardState extends State<AuthCard> {
       try {
         await Provider.of<Auth>(context, listen: false).signIn(
             _authData['email'], _authData['password']);
+        // Navigator.of(context).pushReplacementNamed(ProductsOverViewScreen.routeName);
       } catch (error) {
         _showErrorDialog('Not correct login or password');
       }
@@ -139,6 +141,7 @@ class _AuthCardState extends State<AuthCard> {
       try {
         await Provider.of<Auth>(context, listen: false).signUp(
             _authData['email'], _authData['password']);
+        // Navigator.of(context).pushReplacementNamed(ProductsOverViewScreen.routeName);
       } catch (error) {
         _showErrorDialog('');
       }

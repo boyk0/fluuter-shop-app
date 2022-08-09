@@ -6,6 +6,10 @@ import 'package:http/http.dart' as http;
 import 'product.dart';
 
 class Products with ChangeNotifier {
+  final String authToken;
+
+  Products(this.authToken, this._items);
+
   List<Product> _items = [
     // Product(
     //   id: 'p1',
@@ -57,8 +61,7 @@ class Products with ChangeNotifier {
     try {
       final index = _items.indexWhere((element) => id == element.id);
       if (index >= 0) {
-        final url = Uri.https('flutter-shop-33f16-default-rtdb.firebaseio.com',
-            '/products/${id}.json');
+        final url = Uri.parse('https://flutter-shop-33f16-default-rtdb.firebaseio.com/products/${id}.json?auth=${this.authToken}');
         await http.patch(url, body: json.encode({
           'title': product.title,
           'isFavorite': product.isFavorite,
@@ -78,8 +81,9 @@ class Products with ChangeNotifier {
 
   Future<void> fetchAndSetProducts() async {
     try {
-      var url = Uri.https(
-          'flutter-shop-33f16-default-rtdb.firebaseio.com', '/products.json');
+      print('token: ${this.authToken}');
+      var url = Uri.parse(
+          'https://flutter-shop-33f16-default-rtdb.firebaseio.com/products.json?auth=${this.authToken}');
       final response = await http.get(url);
       final body = json.decode(response.body) as Map<String, dynamic>;
       final List<Product> loadedProducts = [];
@@ -103,8 +107,8 @@ class Products with ChangeNotifier {
 
   Future<void> addProduct(Product product) async {
     try {
-      var url = Uri.https(
-          'flutter-shop-33f16-default-rtdb.firebaseio.com', '/products.json');
+      var url = Uri.parse(
+          'https://flutter-shop-33f16-default-rtdb.firebaseio.com/products.json?auth=${this.authToken}');
       final response =  await http.post(url, body: json.encode({
         'title': product.title,
         'description': product.description,
@@ -130,8 +134,7 @@ class Products with ChangeNotifier {
 
   Future<void> deleteProduct(String id) async {
     try {
-      final url = Uri.https('flutter-shop-33f16-default-rtdb.firebaseio.com',
-          '/products/${id}.json');
+      final url = Uri.parse('https://flutter-shop-33f16-default-rtdb.firebaseio.com/products/${id}.json?auth=${this.authToken}');
       await http.delete(url);
 
       _items.removeWhere((element) => element.id == id);

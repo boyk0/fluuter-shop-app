@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/cart.dart';
 import '../providers/product.dart';
+import '../providers/products.dart';
 import '../screens/product_detail_screen.dart';
 
 class ProductItem extends StatelessWidget{
@@ -14,7 +15,7 @@ class ProductItem extends StatelessWidget{
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
-
+  final authData = Provider.of<Products>(context, listen: false);
 
     return ClipRRect(
         borderRadius: BorderRadius.circular(10),
@@ -34,7 +35,7 @@ class ProductItem extends StatelessWidget{
                 icon: product.isFavorite ? Icon(Icons.favorite) : Icon(Icons.favorite_border),
                 onPressed: () async {
                   try {
-                    await product.toggleFavoriteStatus();
+                    await product.toggleFavoriteStatus(authData.authToken);
                     Scaffold.of(context).showSnackBar(SnackBar(content: Text('Change favorite status was successful')));
                   } catch (error) {
                     Scaffold.of(context).showSnackBar(SnackBar(content: Text('Change favorite status was not successful')));

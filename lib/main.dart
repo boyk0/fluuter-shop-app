@@ -11,6 +11,7 @@ import 'screens/edit_product_screen.dart';
 import 'screens/orders_screen.dart';
 import 'screens/product_detail_screen.dart';
 import 'screens/products_overview_screen.dart';
+import 'screens/splash_screen.dart';
 import 'screens/user_products_screen.dart';
 
 void main() => runApp(MyApp());
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
       ),
     ],
       child: Consumer<Auth>(
-        builder: (ctx, authData, child) =>  MaterialApp(
+        builder: (ctx, authData, child) => MaterialApp(
           title: 'MyShop',
           theme: ThemeData(
             primarySwatch: Colors.purple,
@@ -45,7 +46,14 @@ class MyApp extends StatelessWidget {
               )
             ),
           ),
-          home: authData.isAuth ? ProductsOverViewScreen() : AuthScreen(),
+          home: authData.isAuth
+              ? ProductsOverViewScreen()
+              : FutureBuilder(
+                future: authData.tryAuthLogin(),
+                builder: (ctx, authResultSnapshot) => authResultSnapshot.connectionState == ConnectionState.waiting
+                    ? SplashScreen()
+                    : AuthScreen(),
+          ),
           routes: {
             ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
             CartScreen.routeName: (ctx) => CartScreen(),

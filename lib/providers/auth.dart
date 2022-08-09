@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Auth with ChangeNotifier {
   String _token;
@@ -32,9 +33,39 @@ class Auth with ChangeNotifier {
         throw Exception('Sign up is not success');
       }
       final body = json.decode(response.body);
+      _token = body['idToken'];
+      _userId = body['localId'];
+      _expireDate = DateTime.now().add(Duration(seconds: int.parse(body['expiresIn'])));
+      final prefs = await SharedPreferences.getInstance();
+      final userData = json.encode({
+        'token': _token,
+        'userId': _userId,
+        'expiryDate': _expireDate.toIso8601String(),
+      });
+      prefs.setString('userData', userData);
     } catch (error) {
       throw error;
     }
+  }
+
+  Future<bool> tryAuthLogin () async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey('userData')) {
+      return false;
+    }
+
+    final data = json.decode(prefs.getString('userData')) as Map<String, Object>;
+    final expireDate = DateTime.parse(data['expiryDate']);
+
+    if (expireDate.isBefore(DateTime.now())) {
+      return false;
+    }
+    _token = data['token'];
+    _userId = data['userId'];
+    _expireDate = expireDate;
+    notifyListeners();
+    _autoLogout();
+    return true;
   }
 
   Future<void> signIn(String email, String password) async {
@@ -53,6 +84,13 @@ class Auth with ChangeNotifier {
       _userId = body['localId'];
       _expireDate = DateTime.now().add(Duration(seconds: int.parse(body['expiresIn'])));
       notifyListeners();
+      final prefs = await SharedPreferences.getInstance();
+      final userData = json.encode({
+        'token': _token,
+        'userId': _userId,
+        'expiryDate': _expireDate.toIso8601String(),
+      });
+      prefs.setString('userData', userData);
     } catch (error) {
       throw error;
     }
@@ -64,7 +102,7 @@ class Auth with ChangeNotifier {
     return this._userId;
   }
 
-  void logOut() {
+  Future<void> logOut() async {
     _expireDate = null;
     _userId = null;
     _token = null;
@@ -73,6 +111,8 @@ class Auth with ChangeNotifier {
       _authTimer = null;
     }
     notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove('userData');
   }
 
   void _autoLogout() {

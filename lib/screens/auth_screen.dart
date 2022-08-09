@@ -103,6 +103,22 @@ class _AuthCardState extends State<AuthCard> {
   var _isLoading = false;
   final _passwordController = TextEditingController();
 
+  void _showErrorDialog(String message) {
+    showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text('An error Occurred!'),
+          content: Text(message),
+          actions: [
+            FlatButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: Text('OK'),
+            )
+          ],
+        ),
+    );
+  }
+
   Future<void> _submit() async {
     if (!_formKey.currentState.validate()) {
       // Invalid!
@@ -113,9 +129,19 @@ class _AuthCardState extends State<AuthCard> {
       _isLoading = true;
     });
     if (_authMode == AuthMode.Login) {
-      await Provider.of<Auth>(context, listen: false).signIn(_authData['email'], _authData['password']);
+      try {
+        await Provider.of<Auth>(context, listen: false).signIn(
+            _authData['email'], _authData['password']);
+      } catch (error) {
+        _showErrorDialog('Not correct login or password');
+      }
     } else {
-      await Provider.of<Auth>(context, listen: false).signUp(_authData['email'], _authData['password']);
+      try {
+        await Provider.of<Auth>(context, listen: false).signUp(
+            _authData['email'], _authData['password']);
+      } catch (error) {
+        _showErrorDialog('');
+      }
     }
     setState(() {
       _isLoading = false;

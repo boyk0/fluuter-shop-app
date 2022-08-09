@@ -8,7 +8,9 @@ import 'product.dart';
 class Products with ChangeNotifier {
   final String authToken;
 
-  Products(this.authToken, this._items);
+  final String userId;
+
+  Products(this.authToken, this.userId, this._items);
 
   List<Product> _items = [
     // Product(
@@ -64,7 +66,6 @@ class Products with ChangeNotifier {
         final url = Uri.parse('https://flutter-shop-33f16-default-rtdb.firebaseio.com/products/${id}.json?auth=${this.authToken}');
         await http.patch(url, body: json.encode({
           'title': product.title,
-          'isFavorite': product.isFavorite,
           'imageUrl': product.imageUrl,
           'price': product.price,
           'description': product.description,
@@ -87,6 +88,10 @@ class Products with ChangeNotifier {
       final response = await http.get(url);
       final body = json.decode(response.body) as Map<String, dynamic>;
       final List<Product> loadedProducts = [];
+      final favoriteUrl = Uri.parse(
+          'https://flutter-shop-33f16-default-rtdb.firebaseio.com/userFavorites/${this.userId}.json?auth=${this.authToken}');
+      final favoriteResponse = await http.get(favoriteUrl);
+      final favoriteBody = json.decode(favoriteResponse.body);
       body.forEach((productId, data) {
         loadedProducts.add(Product(
             id: productId,
@@ -94,7 +99,7 @@ class Products with ChangeNotifier {
             imageUrl: data['imageUrl'],
             description: data['description'],
             price: data['price'],
-            isFavorite: data['isFavorite'],
+            isFavorite: favoriteBody == null ? false : favoriteBody[productId] ?? false,
         ));
         notifyListeners();
       });
@@ -114,7 +119,6 @@ class Products with ChangeNotifier {
         'description': product.description,
         'price': product.price,
         'imageUrl': product.imageUrl,
-        'isFavorite': product.isFavorite,
       }));
       if (response.statusCode == 200) {
         final body = json.decode(response.body);

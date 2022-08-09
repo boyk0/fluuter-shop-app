@@ -57,4 +57,8 @@ class Auth with ChangeNotifier {
       throw error;
     }
   }
+
+  String get userId {
+    return this._userId;
+  }
 }

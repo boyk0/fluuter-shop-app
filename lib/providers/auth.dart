@@ -15,10 +15,13 @@ class Auth with ChangeNotifier {
         'password': password,
         'returnSecureToken': true,
       }));
+      if (response.statusCode != 200) {
+        throw Exception('Sign up is not success');
+      }
       final body = json.decode(response.body);
       print(body);
     } catch (error) {
-      print(error);
+      throw error;
     }
   }
 
@@ -30,10 +33,13 @@ class Auth with ChangeNotifier {
         'password': password,
         'returnSecureToken': true,
       }));
+      if (response.statusCode != 200) {
+        throw Exception('Log in is not success');
+      }
       final body = json.decode(response.body);
       print(body);
     } catch (error) {
-      print(error);
+      throw error;
     }
   }
 }

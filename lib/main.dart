@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'providers/auth.dart';
 import 'providers/cart.dart';
 import 'providers/orders.dart';
 import 'providers/products.dart';
@@ -26,6 +27,9 @@ class MyApp extends StatelessWidget {
       ),
       ChangeNotifierProvider.value(
           value: Orders(),
+      ),
+      ChangeNotifierProvider.value(
+          value: Auth(),
       ),
     ],
       child: MaterialApp(

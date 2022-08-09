@@ -82,7 +82,6 @@ class Products with ChangeNotifier {
 
   Future<void> fetchAndSetProducts() async {
     try {
-      print('token: ${this.authToken}');
       var url = Uri.parse(
           'https://flutter-shop-33f16-default-rtdb.firebaseio.com/products.json?auth=${this.authToken}');
       final response = await http.get(url);

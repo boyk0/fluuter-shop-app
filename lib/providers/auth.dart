@@ -30,7 +30,6 @@ class Auth with ChangeNotifier {
         throw Exception('Sign up is not success');
       }
       final body = json.decode(response.body);
-      print(body);
     } catch (error) {
       throw error;
     }
@@ -48,7 +47,6 @@ class Auth with ChangeNotifier {
         throw Exception('Log in is not success');
       }
       final body = json.decode(response.body);
-      print(body);
       _token = body['idToken'];
       _userId = body['localId'];
       _expireDate = DateTime.now().add(Duration(seconds: int.parse(body['expiresIn'])));

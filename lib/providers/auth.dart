@@ -61,4 +61,11 @@ class Auth with ChangeNotifier {
   String get userId {
     return this._userId;
   }
+
+  void logOut() {
+    _expireDate = null;
+    _userId = null;
+    _token = null;
+    notifyListeners();
+  }
 }
